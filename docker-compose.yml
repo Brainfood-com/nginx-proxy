@@ -1,0 +1,26 @@
+version: '2.1'
+
+networks:
+  default:
+    external:
+      name: nginx
+
+services:
+  nginx:
+    image: nginx
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - /etc/nginx/conf.d
+    - /etc/nginx/certs
+
+  dockergen:
+    image: jwilder/docker-gen
+    command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
+    volumes_from:
+    - nginx
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+    - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
+
