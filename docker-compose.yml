@@ -14,7 +14,7 @@ services:
     - "443:443"
     volumes:
     - /etc/nginx/conf.d
-    - /etc/nginx/certs
+    - /srv/ssl-certificates:/etc/nginx/certs
 
   dockergen:
     image: jwilder/docker-gen
