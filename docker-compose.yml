@@ -14,7 +14,7 @@ services:
     - "443:443"
     volumes:
     - /etc/nginx/conf.d
-    - /srv/ssl-certificates:/etc/nginx/certs
+    - /srv/ssl-certificates:/etc/nginx/certs:ro
 
   dockergen:
     image: jwilder/docker-gen
@@ -24,4 +24,12 @@ services:
     volumes:
     - /var/run/docker.sock:/tmp/docker.sock:ro
     - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes_from:
+    - nginx
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+    - /srv/ssl-certificates:/etc/nginx/certs:rw
 
