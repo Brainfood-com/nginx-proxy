@@ -17,6 +17,7 @@ services:
     - /etc/nginx/vhost.d
     - /usr/share/nginx/html
     - /srv/ssl-certificates:/etc/nginx/certs:ro
+    - ./increase-client-max-body-size.conf:/etc/nginx/conf.d/00-increase-client-max-body-size.conf
 
   dockergen:
     image: jwilder/docker-gen
