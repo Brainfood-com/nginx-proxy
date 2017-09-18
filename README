@@ -1,0 +1,5 @@
+This project is based on jwilder/nginx-proxy, but designed to not have any
+internal virtual hosts.  Instead, those are connected via an external overlay
+network.  This project is meant to be installed once on a host.
+
+The original jwilder repository is MIT licensed, so this one is as well.
