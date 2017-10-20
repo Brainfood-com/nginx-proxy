@@ -7,6 +7,7 @@ networks:
 
 services:
   nginx:
+    restart: always
     image: nginx
     container_name: nginx
     logging:
@@ -25,6 +26,7 @@ services:
     - ./increase-client-max-body-size.conf:/etc/nginx/conf.d/00-increase-client-max-body-size.conf
 
   dockergen:
+    restart: always
     image: jwilder/docker-gen
     container_name: nginx-gen
     command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
@@ -35,6 +37,7 @@ services:
     - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
 
   letsencrypt:
+    restart: always
     image: jrcs/letsencrypt-nginx-proxy-companion
     volumes_from:
     - nginx
