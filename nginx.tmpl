@@ -128,6 +128,8 @@ upstream {{ $upstream_name }} {
 {{/* Get the HTTPS_METHOD defined by containers w/ the same vhost, falling back to "redirect" */}}
 {{ $https_method := or (first (groupByKeys $containers "Env.HTTPS_METHOD")) "redirect" }}
 
+{{ $websocket_paths := groupByMulti $containers "Env.WEBSOCKET_PATHS" "," }}
+
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
 
@@ -201,6 +203,16 @@ server {
                 include /etc/nginx/vhost.d/default_location;
                 {{ end }}
 	}
+{{ range $path, $ignored := $websocket_paths }}
+        # websocket path: {{$path}}
+        location {{trim $path}} {
+                proxy_pass {{ trim $proto }}://{{ trim $upstream_name }}{{trim $path}};
+                proxy_connect_timeout 10m;
+                proxy_read_timeout 7d;
+                proxy_send_timeout 7d;
+        }
+{{end}}
+
 }
 
 {{ end }}
@@ -235,6 +247,17 @@ server {
                 include /etc/nginx/vhost.d/default_location;
                 {{ end }}
 	}
+
+{{ range $path, $ignored := $websocket_paths }}
+        # websocket path: {{$path}}
+        location {{trim $path}} {
+                proxy_pass {{ trim $proto }}://{{ trim $upstream_name }}{{trim $path}};
+                proxy_read_timeout 7d;
+                proxy_connect_timeout 10m;
+                proxy_send_timeout 7d;
+        }
+{{end}}
+
 }
 
 {{ if (and (not $is_https) (exists "/etc/nginx/certs/default.crt") (exists "/etc/nginx/certs/default.key")) }}
