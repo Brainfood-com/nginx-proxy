@@ -2,3 +2,6 @@ FROM nginx
 
 COPY increase-client-max-body-size.conf /etc/nginx/conf.d/00-increase-client-max-body-size.conf
 COPY increase-server-names-hash-bucket-size.conf /etc/nginx/conf.d/00-increase-server-names-hash-bucket-size.conf
+COPY include.conf /etc/nginx/conf.d/include.conf
+
+RUN ["ln", "-sf", "/srv/nginx/conf-gen/default.conf", "/etc/nginx/conf.d/default.conf"]
