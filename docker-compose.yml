@@ -8,7 +8,9 @@ networks:
 services:
   nginx:
     restart: always
-    image: nginx
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     container_name: nginx
     logging:
       driver: "json-file"
@@ -23,19 +25,18 @@ services:
     - /etc/nginx/vhost.d
     - /usr/share/nginx/html
     - /srv/ssl-certificates:/etc/nginx/certs:ro
-    - ./increase-client-max-body-size.conf:/etc/nginx/conf.d/00-increase-client-max-body-size.conf
-    - ./increase-server-names-hash-bucket-size.conf:/etc/nginx/conf.d/00-increase-server-names-hash-bucket-size.conf
 
   dockergen:
     restart: always
-    image: jwilder/docker-gen
+    build:
+      context: .
+      dockerfile: Dockerfile.dockergen
     container_name: nginx-gen
     command: -notify-sighup nginx -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     volumes_from:
     - nginx
     volumes:
     - /var/run/docker.sock:/tmp/docker.sock:ro
-    - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl
 
   letsencrypt:
     restart: always
